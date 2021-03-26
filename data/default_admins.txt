@@ -1,0 +1,8 @@
+admin
+administrator
+operator
+root
+test
+adm
+dev
+developer
