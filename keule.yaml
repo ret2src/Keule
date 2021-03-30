@@ -1,0 +1,22 @@
+scope:
+  company_full: Test Company Incl
+  company_short: test
+  keywords:
+    - 1998
+    - security
+
+contexts:
+  default_admins:
+    pipelines:
+      - admin_default
+      - admin_company
+    inputs_logins:
+      - path: "data/default_admin_users.txt"
+        tags: ['default', 'admin']
+    inputs_passwords:
+      - path: "data/default_admin_users.txt"
+        tags: ['default', 'admin']
+    outputs:
+      - class: ListOutput
+        source: credentials
+        destination: admin_userpass
