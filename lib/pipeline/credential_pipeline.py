@@ -2,10 +2,10 @@ import collections
 from dataclasses import dataclass, field
 from typing import Sequence, Union, Callable
 
-from lib.filters import Filter, TagFilter, FilterableObject
+from lib.filters import Filter
 from lib.mergers import CredentialMerger, CrossCredentialMerger
 from lib.models import Login, Password, Credential
-from lib.rules import Rule, AppendLastYearsRule
+from lib.rules import Rule
 
 
 @dataclass
@@ -43,9 +43,3 @@ class CredentialPipeline(object):
         return creds
 
 
-
-admin_default = CredentialPipeline(login_filter=(TagFilter('admin') | TagFilter('company')),
-                                                       password_filter=TagFilter('admin'))
-admin_company = CredentialPipeline(login_filter=TagFilter('admin'),
-                                                       password_filter=TagFilter('company'),
-                                                       password_chains=[[TagFilter('company'), AppendLastYearsRule(separators=(".", ""))]])

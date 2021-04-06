@@ -16,6 +16,10 @@ class Password(object):
     def __lt__(self, other):
         return self.reliability < other.reliability
 
+    @classmethod
+    def from_str(cls, *args, **kwargs):
+        return cls(*args, **kwargs)
+
 @dataclass
 class Login(object):
     value: str
@@ -30,6 +34,10 @@ class Login(object):
 
     def __lt__(self, other):
         return self.reliability < other.reliability
+
+    @classmethod
+    def from_str(cls, *args, **kwargs):
+        return cls(*args, **kwargs)
 
 @dataclass
 class Credential(object):
@@ -49,10 +57,14 @@ class Credential(object):
     def __lt__(self, other):
         return self.reliability < other.reliability
 
+    @classmethod
+    def from_str(cls, value:str, *args, **kwargs):
+        login_value, password_value = value.split(":", 1)
+        return cls(login=Login(login_value, *args, **kwargs), password=Password(password_value, *args, **kwargs))
 
 @dataclass
 class Scope(object):
     company: str
+    company_abbreviation: str
     keywords: Sequence[str]
-
 

@@ -1,16 +1,19 @@
 from dataclasses import dataclass, field
 from typing import Sequence
 
+from lib.generators import ScopedGenerator
 from lib.models import Scope, Login, Password, Credential
 from lib.outputs import Output
-from lib.pipelines import CredentialPipeline
+from lib.pipeline.credential_pipeline import CredentialPipeline
 from lib.rules import LimitRule, Rule
 
 
 @dataclass
 class Context(object):
+    name: str
     pipelines: Sequence[CredentialPipeline]
     scope: Scope
+    generators: [ScopedGenerator] = field(default_factory=lambda: [])
     logins: [Login] = field(default_factory=lambda: [])
     passwords: [Password] = field(default_factory=lambda: [])
     credentials: [Credential] = field(default_factory=lambda: [])
@@ -20,7 +23,6 @@ class Context(object):
     credential_output_rule: Rule = field(default_factory=lambda: LimitRule(count=100))
     login_limit: int = 100
     credential_limit: int = 100
-
 
     def build(self):
         self.__add_from_scope()
@@ -40,8 +42,10 @@ class Context(object):
         for output in self.outputs:
             output.write(logins=logins, passwords=passwords, credentials=creds)
 
-
     def __add_from_scope(self):
-        # todo generate combinations from scope
-        self.logins.append(Login(self.scope.company.lower(), tags=('company')))
-        self.passwords.append(Password(self.scope.company.lower(), tags=('company')))
+        for generator_cls in self.generators:
+            generator = generator_cls(self.scope)
+            self.logins.update(generator.logins)
+            self.passwords.update(generator.passwords)
+            self.credentials.update(generator.credentials)
+

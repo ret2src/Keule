@@ -1,22 +1,47 @@
-scope:
-  company_full: Test Company Incl
-  company_short: test
+scope: !Scope
+  company: Test Company Incl
+  company_abbreviation: test
   keywords:
     - 1998
     - security
 
 contexts:
-  default_admins:
+  - name: default_admins
     pipelines:
       - admin_default
       - admin_company
-    inputs_logins:
-      - path: "data/default_admin_users.txt"
-        tags: ['default', 'admin']
-    inputs_passwords:
-      - path: "data/default_admin_users.txt"
-        tags: ['default', 'admin']
+    generators:
+      - scoped_company
+    inputs:
+      logins:
+        - !FileInput
+          path: data/default_admin_users.txt
+          reliability: 0.8
+          tags: [ 'default', 'admin' ]
+        - !ListInput
+          tags: [ 'default', 'admin', 'important' ]
+          reliability: 0.9
+          values:
+            - bumba
+            - lunga
+            - bobobobobo
+      passwords:
+        - !FileInput
+            path: data/default_admin_passwords.txt
+            reliability: 0.8
+            tags: [ 'default', 'admin' ]
+      credentials:
+        - !FileInput
+          path: data/default_admin_credentials.txt
+          reliability: 0.95
+          tags: [ 'default', 'admin' ]
+        - !ListInput
+          tags: [ 'default', 'admin', 'important' ]
+          reliability: 1
+          values:
+            - abc:abc
+            - def:lef
     outputs:
-      - class: ListOutput
+      - !ListOutput
         source: credentials
-        destination: admin_userpass
+        destination: output/admin_userpass.txt

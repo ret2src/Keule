@@ -30,3 +30,5 @@ Selects Logins and Passwords from a given set, expands them based on a set of Ru
 ## CredentialMerger
 Combines a given set of Logins and Passwords to Credentials
 
+## ScopedGenerators
+Creats new Credentials, Logins and Passwords based on a given Scope. This can be used to dynamically generate entries for a scope
