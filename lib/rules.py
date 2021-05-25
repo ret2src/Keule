@@ -20,12 +20,25 @@ class AppendLastYearsRule(Rule):
 
     def apply(self, pws: Sequence[Password]) -> Sequence[Password]:
         for pw in pws:
-            yield pw
             for x in range(self.count):
                 for sep in self.separators:
                     yield Password(value=pw.value + sep + str(self.current_year - x),
                                    reliability=pw.reliability - (0.03 * x), tags=('year', *pw.tags))
 
+@dataclass
+class AppendRule(Rule):
+    suffix: str 
+    def apply(self, pws: Sequence[Password]) -> Sequence[Password]:
+        for pw in pws:
+            for x in range(self.count):
+                for sep in self.separators:
+                    yield Password(value=pw.value + self.suffix, reliability=pw.reliability * 0.9, tags=pw.tags)
+
+@dataclass
+class CapitalizeRule(Rule):
+    def apply(self, pws: Sequence[Password]) -> Sequence[Password]:
+        for pw in pws:
+            yield Password(value=pw.value.capitalize(), reliability=pw.reliability, tags=pw.tags)
 
 @dataclass
 class LimitRule(Rule):

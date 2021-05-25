@@ -50,4 +50,22 @@ class ScopedCompanyGenerator(ScopedGenerator):
         return [Password(self.__company_name, reliability=self.reliability, tags=('company')),
                 Password(self.__company_short, reliability=self.reliability, tags=('company', 'company_abbreviation'))]
 
+@dataclass
+class ScopedKeywordsGenerator(ScopedGenerator):
+    scope: Scope
+    reliability: int = 0.9
+
+    @property
+    def credentials(self) -> Sequence[Credential]:
+        return []
+
+    @property
+    def logins(self) -> Sequence[Login]:
+        return [Login(x, reliability=self.reliability, tags=('keyword')) for x in self.scope.keywords]
+
+    @property
+    def passwords(self) -> Sequence[Password]:
+        return [Password(x, reliability=self.reliability, tags=('keyword')) for x in self.scope.keywords]
+
 scoped_company = ScopedCompanyGenerator
+scoped_keywords = ScopedKeywordsGenerator
